@@ -7,14 +7,14 @@
 #
 # Then run the container using:
 #
-# docker run -e PROFILE=prod -i --rm -p 8080:8080 quarkus/containerized-quarkus-jvm
+# docker run -e PROFILE=dev -i --rm -p 8080:8080 quarkus/containerized-quarkus-jvm
 #
 # If you want to include the debug port into your docker image
 # you will have to expose the debug port (default 5005) like this :  EXPOSE 8080 5050
 #
 # Then run the container using :
 #
-# docker run -e PROFILE=prod -i --rm -p 8080:8080 -p 5005:5005 -e JAVA_ENABLE_DEBUG="true" quarkus/containerized-quarkus-jvm
+# docker run -e PROFILE=dev -i --rm -p 8080:8080 -p 5005:5005 -e JAVA_ENABLE_DEBUG="true" quarkus/containerized-quarkus-jvm
 #
 ###
 FROM adoptopenjdk/openjdk11:jdk-11.0.10_9-alpine-slim
@@ -28,6 +28,5 @@ COPY --chown=1001 ./build/quarkus-app/ /quarkus/
 USER 1001
 
 # Configure the JAVA_OPTIONS, you can add -XshowSettings:vm to also display the heap size.
-ENV PROFILE=prod
-ENTRYPOINT java -Djava.util.logging.manager=org.jboss.logmanager.LogManager -Dquarkus.http.host=0.0.0.0 -Dquarkus.profile=$PROFILE -jar quarkus-run.jar
+ENTRYPOINT java -Djava.util.logging.manager=org.jboss.logmanager.LogManager -Dquarkus.http.host=0.0.0.0 -Dquarkus.profile=${PROFILE:-prod} -jar quarkus-run.jar
 EXPOSE 8080
